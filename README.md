@@ -1,6 +1,5 @@
-Kanban Board-Based Task/Project Management Tool
 ## Project Overview
-It is a web-based application designed for efficient project management in large organizations. It implements the Kanban methodology to streamline project and workflow management, providing a visual interface for creating, organizing, and tracking tasks across different stages of completion.
+Kanban Board-Based Task/Project Management Tool is a web-based application designed for efficient project management in large organizations where teams are working on multiple projects simultaneously, so managing each one manually becomes tough task sometimes. It implements the Kanban methodology to streamline project and workflow management, providing a visual interface for creating, organizing, and tracking tasks across different stages of completion.
 Kanban is a lean method used to manage and improve work across human systems. This approach aims to balance demands with available capacity and enhance the handling of system-level bottlenecks.
 
 Key principles of Kanban include:
