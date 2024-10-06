@@ -25,17 +25,13 @@ Additional libraries: react-beautiful-dnd for drag-and-drop functionality
 ## Steps to Run the Project
 1. Clone the repository,
 2. Set up the backend:
-cd backend
-dotnet restore
-dotnet run
-The API should now be running on http://localhost:5126
-
-3. Set up the frontend:
-cd ../frontend
-npm install
-npm start
-The React app should now be running on http://localhost:3000
-Open your browser and navigate to http://localhost:3000 to use the application.
+3. cd backend
+4. dotnet restore
+5. dotnet run. -> The API should now be running on http://localhost:5126
+6. Set up the frontend:
+7. cd ../frontend
+8. npm install
+9. npm start -> The React app should now be running on http://localhost:3000
 
 Configuration
 Database connection: Update the connection string in appsettings.json in the backend project.
