@@ -1,0 +1,28 @@
+.lane {
+  border: 1px solid #ddd;
+  padding: 10px;
+  margin: 10px;
+  display: inline-block;
+  vertical-align: top;
+  width: 200px;
+}
+
+.cards {
+  margin-top: 10px;
+}
+
+.card {
+  border: 1px solid #ccc;
+  padding: 5px;
+  margin: 5px 0;
+  cursor: pointer;
+}
+
+.card-details {
+  position: fixed;
+  top: 20%;
+  left: 30%;
+  padding: 20px;
+  background-color: white;
+  border: 1px solid #ccc;
+}
