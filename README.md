@@ -77,7 +77,7 @@ git clone https://github.com/your-username/kanban-project-management-tool.git
    The ASP.NET server should now be running on `http://localhost:5000`.
 
 ### 3. Setting Up the Backend (Spring Boot)
-
+note: Spring boot server is not perfect and has bugs so use asp.net server for now. I will update the project with the working code soon.
 1. Navigate to the `backend/springboot` folder:
    
    cd backend/springboot
