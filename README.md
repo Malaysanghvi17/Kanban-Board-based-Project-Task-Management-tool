@@ -131,7 +131,7 @@ Update the database connection details in the backend's configuration file (`app
 
 
 properties
-# Spring Boot (application.properties)
+## Spring Boot (application.properties)
 spring.datasource.url=jdbc:postgresql://localhost:5432/kanbanDB1
 spring.datasource.username=your-username
 spring.datasource.password=your-password
@@ -142,8 +142,6 @@ spring.datasource.password=your-password
 ## Running the Application
 Once both the backend and frontend are running, open your browser and go to:
 http://localhost:3000
-
-You will see the Kanban board where you can start managing tasks.
 ---
 
 ## Contributing
