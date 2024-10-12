@@ -58,7 +58,7 @@ The **Kanban Based Task - Project Management Tool** is a dynamic, full-stack web
 You can use this project by cloning the repository. The repository contains both the React frontend and backend (ASP.NET and Spring Boot) implementations.
 
 
-git clone https://github.com/your-username/kanban-project-management-tool.git
+git clone [https://github.com/your-username/kanban-project-management-tool.git](https://github.com/Malaysanghvi17/Kanban-Board-based-Project-Task-Management-tool.git)
 
 
 ### 2. Setting Up the Backend (ASP.NET)
