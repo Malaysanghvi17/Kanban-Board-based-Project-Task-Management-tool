@@ -1,0 +1,337 @@
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+public class Boards
+{
+    [Key]
+    public int Bid { get; set; }
+
+    [ForeignKey("Owner")]
+    public int Uid { get; set; }  // Changed to OwnerId
+
+    public string? Name { get; set; } // Made nullable
+
+    public Users? Owner { get; set; } // Made nullable
+
+    public List<Lane_Columns> Lanes { get; set; } = new();
+}
+
+using System.ComponentModel.DataAnnotations;
+
+public class Users
+{
+    [Key]
+    public int Uid { get; set; }
+
+    public string Name { get; set; } = string.Empty;
+    public string Email { get; set; } = string.Empty;
+
+    public List<Boards> SharedBoards { get; set; } = new();
+
+    public DateTimeOffset CreatedAt { get; set; }
+}
+
+
+using System.ComponentModel.DataAnnotations;
+
+public class Card_Issues
+{
+    [Key]
+    public int Cid { get; set; }
+    public int Pid { get; set; }
+    public string? Title { get; set; } // Made nullable
+    public string? Label { get; set; } // Made nullable
+    public string? Description { get; set; } // Made nullable
+    public string? Comments { get; set; } // Made nullable
+    public DateTime StartDate { get; set; }
+    public DateTime EndDate { get; set; }
+    public int Lid { get; set; }
+    public Lane_Columns? Lane { get; set; } // Made nullable
+}
+
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+public class Lane_Columns
+{
+    [Key]
+    public int Lid { get; set; }
+
+    public int Bid { get; set; }
+
+    [ForeignKey("Bid")]
+    public Boards? Board { get; set; } // Made nullable
+
+    public string? Title { get; set; } // Made nullable
+    public string? Label { get; set; } // Made nullable
+
+    public List<Card_Issues> Cards { get; set; } = new();
+}
+
+using Microsoft.EntityFrameworkCore;
+
+public class JiraCloneContext : DbContext
+{
+    public JiraCloneContext(DbContextOptions<JiraCloneContext> options)
+        : base(options)
+    {
+    }
+    public DbSet<Users> Users { get; set; } 
+    public DbSet<Boards> Boards { get; set; } 
+    public DbSet<Lane_Columns> Lanes { get; set; } 
+    public DbSet<Card_Issues> Cards { get; set; } 
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        // Add any custom configurations here
+        base.OnModelCreating(modelBuilder);
+    }
+}
+
+
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+
+[ApiController]
+[Route("api/users/{guid}/boards")]
+public class BoardsController : ControllerBase
+{
+    private readonly JiraCloneContext _context;
+
+    public BoardsController(JiraCloneContext context)
+    {
+        _context = context;
+    }
+
+    // GET: api/users/{guid}/boards
+    [HttpGet]
+    public IActionResult GetBoards(int guid)
+    {
+        var boards = _context.Boards.Include(b => b.Lanes).Where(b => b.Uid == guid).ToList();
+        return Ok(boards);
+    }
+
+    // POST: api/users/{guid}/boards
+    [HttpPost]
+    public IActionResult CreateBoard(int guid, [FromBody] Boards newBoard)
+    {
+        newBoard.Uid = guid;
+        _context.Boards.Add(newBoard);
+        _context.SaveChanges();
+        return CreatedAtAction(nameof(GetBoards), new { guid }, newBoard);
+    }
+
+    // PUT: api/users/{guid}/boards/{bid}
+    [HttpPut("{bid}")]
+    public IActionResult UpdateBoard(int guid, int bid, [FromBody] Boards updatedBoard)
+    {
+        var board = _context.Boards.FirstOrDefault(b => b.Uid == guid && b.Bid == bid);
+        if (board == null) return NotFound();
+
+        board.Name = updatedBoard.Name;
+        _context.SaveChanges();
+        return NoContent();
+    }
+
+    // DELETE: api/users/{guid}/boards/{bid}
+    [HttpDelete("{bid}")]
+    public IActionResult DeleteBoard(int guid, int bid)
+    {
+        var board = _context.Boards.FirstOrDefault(b => b.Uid == guid && b.Bid == bid);
+        if (board == null) return NotFound();
+
+        _context.Boards.Remove(board);
+        _context.SaveChanges();
+        return NoContent();
+    }
+}
+
+
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+
+[ApiController]
+[Route("api/lanes/{glid}/cards")]
+public class CardIssuesController : ControllerBase
+{
+    private readonly JiraCloneContext _context;
+
+    public CardIssuesController(JiraCloneContext context)
+    {
+        _context = context;
+    }
+
+    // GET: api/lanes/{glid}/cards
+    [HttpGet]
+    public IActionResult GetCards(int glid)
+    {
+        var cards = _context.Cards.Where(c => c.Lid == glid).ToList();
+        return Ok(cards);
+    }
+
+    // POST: api/lanes/{glid}/cards
+    [HttpPost]
+    public IActionResult CreateCard(int glid, [FromBody] Card_Issues newCard)
+    {
+        newCard.Lid = glid;
+        _context.Cards.Add(newCard);
+        _context.SaveChanges();
+        return CreatedAtAction(nameof(GetCards), new { glid }, newCard);
+    }
+
+    // PUT: api/lanes/{glid}/cards/{cid}
+    [HttpPut("{cid}")]
+    public IActionResult UpdateCard(int glid, int cid, [FromBody] Card_Issues updatedCard)
+    {
+        var card = _context.Cards.FirstOrDefault(c => c.Cid == cid);
+        if (card == null) return NotFound();
+
+        card.Title = updatedCard.Title;
+        card.Label = updatedCard.Label;
+        card.Description = updatedCard.Description;
+        card.Comments = updatedCard.Comments;
+        card.StartDate = updatedCard.StartDate;
+        card.EndDate = updatedCard.EndDate;
+        card.Lid = updatedCard.Lid;
+        _context.SaveChanges();
+        return NoContent();
+    }
+
+    // DELETE: api/lanes/{glid}/cards/{cid}
+    [HttpDelete("{cid}")]
+    public IActionResult DeleteCard(int glid, int cid)
+    {
+        var card = _context.Cards.FirstOrDefault(c => c.Lid == glid && c.Cid == cid);
+        if (card == null) return NotFound();
+
+        _context.Cards.Remove(card);
+        _context.SaveChanges();
+        return NoContent();
+    }
+
+
+    
+}
+
+
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+
+[ApiController]
+[Route("api/boards/{gbid}/lanes")]
+public class LaneColumnsController : ControllerBase
+{
+    private readonly JiraCloneContext _context;
+
+    public LaneColumnsController(JiraCloneContext context)
+    {
+        _context = context;
+    }
+
+    // GET: api/boards/{gbid}/lanes
+    [HttpGet]
+    public IActionResult GetLanes(int gbid)
+    {
+        var lanes = _context.Lanes.Include(l => l.Cards).Where(l => l.Bid == gbid).ToList();
+        return Ok(lanes);
+    }
+
+    // POST: api/boards/{gbid}/lanes
+    [HttpPost]
+    public IActionResult CreateLane(int gbid, [FromBody] Lane_Columns newLane)
+    {
+        newLane.Bid = gbid;
+        _context.Lanes.Add(newLane);
+        _context.SaveChanges();
+        return CreatedAtAction(nameof(GetLanes), new { gbid }, newLane);
+    }
+
+    // PUT: api/boards/{gbid}/lanes/{lid}
+    [HttpPut("{lid}")]
+    public IActionResult UpdateLane(int gbid, int lid, [FromBody] Lane_Columns updatedLane)
+    {
+        var lane = _context.Lanes.FirstOrDefault(l => l.Bid == gbid && l.Lid == lid);
+        if (lane == null) return NotFound();
+
+        lane.Title = updatedLane.Title;
+        lane.Label = updatedLane.Label;
+        _context.SaveChanges();
+        return NoContent();
+    }
+
+    // DELETE: api/boards/{gbid}/lanes/{lid}
+    [HttpDelete("{lid}")]
+    public IActionResult DeleteLane(int gbid, int lid)
+    {
+        var lane = _context.Lanes.FirstOrDefault(l => l.Bid == gbid && l.Lid == lid);
+        if (lane == null) return NotFound();
+
+        _context.Lanes.Remove(lane);
+        _context.SaveChanges();
+        return NoContent();
+    }
+}
+
+
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+
+[ApiController]
+[Route("api/users")]
+public class UsersController : ControllerBase
+{
+    private readonly JiraCloneContext _context;
+
+    public UsersController(JiraCloneContext context)
+    {
+        _context = context;
+    }
+
+    // GET: api/users/{guid}
+    [HttpGet("{guid}")]
+    public IActionResult GetUser(int guid)
+    {
+        var user = _context.Users.Include(u => u.SharedBoards).FirstOrDefault(u => u.Uid == guid);
+        if (user == null) return NotFound();
+        return Ok(user);
+    }
+
+    // POST: api/users
+    [HttpPost]
+    public IActionResult CreateUser([FromBody] Users newUser)
+    {
+        _context.Users.Add(newUser);
+        _context.SaveChanges();
+        return CreatedAtAction(nameof(GetUser), new { guid = newUser.Uid }, newUser);
+    }
+
+    // PUT: api/users/{guid}
+    [HttpPut("{guid}")]
+    public IActionResult UpdateUser(int guid, [FromBody] Users updatedUser)
+    {
+        var user = _context.Users.FirstOrDefault(u => u.Uid == guid);
+        if (user == null) return NotFound();
+
+        user.Name = updatedUser.Name;
+        user.Email = updatedUser.Email;
+        user.CreatedAt = updatedUser.CreatedAt;
+
+        _context.SaveChanges();
+        return NoContent();
+    }
+
+    // DELETE: api/users/{guid}
+    [HttpDelete("{guid}")]
+    public IActionResult DeleteUser(int guid)
+    {
+        var user = _context.Users.FirstOrDefault(u => u.Uid == guid);
+        if (user == null) return NotFound();
+
+        _context.Users.Remove(user);
+        _context.SaveChanges();
+        return NoContent();
+    }
+}
+
+
+
