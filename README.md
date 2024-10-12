@@ -40,6 +40,15 @@ The **Kanban Based Task - Project Management Tool** is a dynamic, full-stack web
 
 ## project working screenshots:
 
+![image](https://github.com/user-attachments/assets/2d1aa72f-e0c3-4668-92e6-366a2f5dd429)
+![image](https://github.com/user-attachments/assets/6cb779bd-f8b0-479f-b9a8-1ca57c9e0691)
+![image](https://github.com/user-attachments/assets/bb3dad14-5e0f-4221-9e90-9d01963aee39)
+![image](https://github.com/user-attachments/assets/48d896bd-3db4-4579-bd70-04e0aff970cd)
+![image](https://github.com/user-attachments/assets/3d337da3-3e4f-4475-8d98-fbe25b48917f)
+![image](https://github.com/user-attachments/assets/f3702ea9-b7bf-4ce9-917d-3215f8c63229)
+![image](https://github.com/user-attachments/assets/2be2b77a-897c-42c7-bf9d-fb31c9096c7c)
+![image](https://github.com/user-attachments/assets/d3384280-f657-459b-9c20-203ce3c35844)
+
 
 
 ## Usage
